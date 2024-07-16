@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -101,33 +102,50 @@ public class GameGenerator : MonoBehaviour
         maxJumpDistance = Mathf.Sqrt(maxJumpHeight * Mathf.Abs(endY - startY));
     }
 
+    private Vector2 _latestPlatform = new Vector3(0f, -3f);
     private void AddPlatform()
     {
-        float randomX;
-        float randomY;
-        int safetyCounter = 0;
-        count++;
+        // New code where we generate platforms based on the latest platforms position
+        // to ensure the distance between them is not too far
 
-        do
-        {
-            randomX = Random.Range(mainCamera.transform.position.x - (cameraWidth / 2), mainCamera.transform.position.x + (cameraWidth / 2));
-            randomY = (platforms.Count == 0)
-                ? lastPosition.y + Random.Range(playerHeight + 3, maxJumpDistance)
-                : platforms[platforms.Count - 1].transform.position.y + Random.Range(playerHeight + 3, maxJumpDistance);
+        var randomPlatformPositionX = Random.Range(-10f, 10f);
+        var randomPlatformPositionY = Random.Range(3f, 5.2f);
 
-            safetyCounter++;
-            if (safetyCounter > 1000)
-            {
-                Debug.LogError("Infinite loop detected in AddPlatform");
-                break;
-            }
-        } while (PreventToClose(new Vector2(randomX, randomY)));
-
-        Vector2 platformPosition = new Vector2(randomX, randomY);
-        GameObject newPlatform = Instantiate(platFormType1, platformPosition, Quaternion.identity);
+        var newPlatformPosition = new Vector2(_latestPlatform.x + randomPlatformPositionX, _latestPlatform.y + randomPlatformPositionY);
+        var newPlatform = Instantiate(platFormType1, newPlatformPosition, Quaternion.identity);
         newPlatform.name = "Platform" + count;
-        AddRandomEffect(newPlatform);
+        // TODO: Something within this AddRandomEffect causes the platforms to dissapear
+        //AddRandomEffect(newPlatform);
         platforms.Add(newPlatform);
+
+        _latestPlatform = newPlatformPosition;
+
+        //// Old code below
+        //float randomX;
+        //float randomY;
+        //int safetyCounter = 0;
+        //count++;
+
+        //do
+        //{
+        //    randomX = Random.Range(mainCamera.transform.position.x - (cameraWidth / 2), mainCamera.transform.position.x + (cameraWidth / 2));
+        //    randomY = (platforms.Count == 0)
+        //        ? lastPosition.y + Random.Range(playerHeight + 3, maxJumpDistance)
+        //        : platforms[platforms.Count - 1].transform.position.y + Random.Range(playerHeight + 3, maxJumpDistance);
+
+        //    safetyCounter++;
+        //    if (safetyCounter > 1000)
+        //    {
+        //        Debug.LogError("Infinite loop detected in AddPlatform");
+        //        break;
+        //    }
+        //} while (PreventToClose(new Vector2(randomX, randomY)));
+
+        //Vector2 platformPosition = new Vector2(randomX, randomY);
+        //GameObject newPlatform = Instantiate(platFormType1, platformPosition, Quaternion.identity);
+        //newPlatform.name = "Platform" + count;
+        //AddRandomEffect(newPlatform);
+        //platforms.Add(newPlatform);
     }
 
 
