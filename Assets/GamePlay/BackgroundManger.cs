@@ -24,7 +24,7 @@ public class BackgroundManager : MonoBehaviour
     void Update()
     {
         // Uppdatera bakgrundens position för att följa kameran
-        Vector3 newBackgroundPosition = new Vector3(initialBackgroundPosition.x, cameraTransform.position.y, initialBackgroundPosition.z);
+        Vector3 newBackgroundPosition = new Vector3(cameraTransform.position.x, cameraTransform.position.y, initialBackgroundPosition.z);
         backgroundRenderer.transform.position = newBackgroundPosition;
 
         // Kolla poängen och byt bakgrund om nödvändigt

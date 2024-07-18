@@ -14,7 +14,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D coll;
     private float jumpTimer;
+    [SerializeField]
     private float points;
+    private SpriteRenderer playerSprite;
 
     void Awake()
     {
@@ -25,12 +27,17 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
+        playerSprite = GetComponent<SpriteRenderer>();
         jumpTimer = 0f;
     }
 
     void Update()
     {
         float moveInput = Input.GetAxis("Horizontal");
+        // Face movement direction
+        if (moveInput != 0)
+            playerSprite.flipX = moveInput < 0;
+
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
         if (jumpTimer > 0)
