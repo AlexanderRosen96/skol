@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 63399010}
   - component: {fileID: 63399009}
   - component: {fileID: 63399011}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ Transform:
   m_GameObject: {fileID: 63399005}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.18, y: -7.53, z: 0}
+  m_LocalPosition: {x: -3.15, y: -7.74, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -670,7 +670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -428.8, y: -929.6}
+  m_AnchoredPosition: {x: -346.1, y: -890.1}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1439842168
@@ -1177,6 +1177,9 @@ MonoBehaviour:
   mainCamera: {fileID: 1449942454}
   Platforms:
   - {fileID: 0}
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1868044654
 GameObject:
   m_ObjectHideFlags: 0

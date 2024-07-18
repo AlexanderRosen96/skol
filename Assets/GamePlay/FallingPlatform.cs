@@ -1,22 +1,30 @@
 using System.Collections;
 using UnityEngine;
 
-public class FallingPlatform : MonoBehaviour, IPlatformEffect
+public class FallingPlatform : DynamicEffectController
 {
-    public float fallDelay = 1f; // Tiden innan plattformen börjar falla
-    private Rigidbody2D rb;
-    private bool playerOnPlatform;
-    public float destroyYPosition = -10f; // Y-positionen där plattformen förstörs
+    private float fallDelay = 2f;
+    private bool playerOnPlatform = false;
+    private bool platformReadyToFall = false;
+    private int platformsLife = 1;
+    private float destroyYPosition = -9f; 
+
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.bodyType = RigidbodyType2D.Kinematic; // Gör plattformen kinematisk tills den faller
+        toStart();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D is not attached to the GameObject.");
+        }
+        else
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+        }
     }
 
     void Update()
     {
-        // Kolla om plattformen har fallit under en viss Y-position
         if (transform.position.y < destroyYPosition)
         {
             Destroy(gameObject);
@@ -27,8 +35,21 @@ public class FallingPlatform : MonoBehaviour, IPlatformEffect
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerOnPlatform = true;
-            StartCoroutine(FallAfterDelay());
+            ContactPoint2D contact = collision.GetContact(0);
+            Vector2 normal = contact.normal;
+
+            if (normal.y < -0.5f)
+            {
+                playerOnPlatform = true;
+                StartCoroutine(FallAfterDelay());
+            }
+        }
+        else if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Platform") || collision.gameObject.CompareTag("PlatformExpanding"))
+        {
+            if(platformsLife == 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -36,24 +57,33 @@ public class FallingPlatform : MonoBehaviour, IPlatformEffect
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            playerOnPlatform = false;
+           playerOnPlatform = false;
         }
     }
 
     IEnumerator FallAfterDelay()
     {
-        yield return new WaitForSeconds(fallDelay);
-        if (playerOnPlatform)
+        if (!platformReadyToFall)
         {
-            rb.bodyType = RigidbodyType2D.Dynamic; // Gör plattformen dynamisk så att den faller
-            rb.gravityScale = 1f; // Sätter gravitationen för att få plattformen att falla
+            yield return new WaitForSeconds(fallDelay);
+            platformReadyToFall=true;
         }
-    }
+       
+        else
+        {
+            if (playerOnPlatform)
+            {
+                platformsLife = 0;
+                yield return new WaitForSeconds(fallDelay-1.7f);
+                rb.constraints &= ~RigidbodyConstraints2D.FreezePositionY;
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                rb.gravityScale = 1f;
+            }
+        }
 
-    public void ApplyEffect(GameObject platform)
+    }
+    public void ActivateEffect(bool activate)
     {
-        // Här skulle du implementera logiken för att applicera fallande effekten på plattformen.
-        // Detta kan innebära att aktivera fallande beteende eller anropa metoder som gör plattformen
-        // dynamisk och startar dess fall.
+        enabled = activate;
     }
 }

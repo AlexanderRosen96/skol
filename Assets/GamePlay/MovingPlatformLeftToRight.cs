@@ -1,27 +1,41 @@
 using UnityEngine;
 
-public class MovingPlatformLeftToRight : MonoBehaviour, IPlatformEffect
+public class MovingPlatformLeftToRight : DynamicEffectController
 {
-    public float moveSpeed = 2f;
-    public float moveDistance = 3f;
+    private float moveSpeed;
+    private float moveDistance;
     private Vector2 startPosition;
+    private bool moveRight;
+    private bool shouldMove;
 
-    public void ApplyEffect(GameObject platform)
+    void Awake()
     {
-        Debug.Log("Applying MovingPlatformLeftToRight effect.");
-        startPosition = platform.transform.position;
+        startPosition = transform.position;
+        moveRight = Random.Range(0, 2) == 0;
+        shouldMove = Random.Range(0f, 1f) > 0.2f;
+        moveSpeed = Random.Range(0.5f, 2f);
+        moveDistance = Random.Range(0.5f, 3f);
     }
 
     void Update()
     {
-        if (startPosition != null)
+        if (shouldMove)
         {
+            rb.constraints &= ~RigidbodyConstraints2D.FreezePositionX;
             Vector2 newPosition = startPosition;
-            newPosition.x += Mathf.Sin(Time.time * moveSpeed) * moveDistance;
-            transform.position = newPosition;  // Använder transform.position istället för platform.transform.position
-            Debug.Log("Updating position: " + transform.position);
+            float direction = moveRight ? 1 : -1;
+            newPosition.x += Mathf.Sin(Time.time * moveSpeed) * moveDistance * direction;
+            transform.position = newPosition;
         }
     }
+    void Start()
+    {
+        toStart();
 
-
+        
+    }
+        public void ActivateEffect(bool activate)
+    {
+        enabled = activate;
+    }
 }

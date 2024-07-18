@@ -7,14 +7,15 @@ TagManager:
   - Ground
   - Platform
   - PlatformExpanding
+  - invisible
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Platforms
   - Water
   - UI
-  - 
+  - Players
   - 
   - 
   - 
